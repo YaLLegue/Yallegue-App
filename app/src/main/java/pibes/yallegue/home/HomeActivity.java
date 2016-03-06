@@ -1,17 +1,26 @@
 package pibes.yallegue.home;
 
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.FloatingActionButton;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -250,9 +259,7 @@ public class HomeActivity extends BaseActivity implements GoogleApiClient.Connec
     public void onLocationChanged(Location location) {
 
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-
         showMarker(latLng);
-
         showPolyline(latLng);
     }
 
@@ -275,8 +282,9 @@ public class HomeActivity extends BaseActivity implements GoogleApiClient.Connec
             myMarker = map.addMarker(new MarkerOptions()
                     .position(latLng)
                     .icon(BitmapDescriptorFactory
-                            .defaultMarker(ConstantsPlayer.TYPE_PLAYER == 1 ? BitmapDescriptorFactory.HUE_GREEN :
-                                    BitmapDescriptorFactory.HUE_RED)));
+                            .fromBitmap(getMarkerBitmapFromView(ConstantsPlayer.TYPE_PLAYER == 1?R.drawable.player_1:R.drawable.player_2))));
+
+
         } else {
             myMarker.setPosition(latLng);
         }
@@ -338,4 +346,26 @@ public class HomeActivity extends BaseActivity implements GoogleApiClient.Connec
 
         return super.onOptionsItemSelected(item);
     }
+
+
+    private Bitmap getMarkerBitmapFromView(@DrawableRes int resId) {
+
+        View mCustomMarkerView = ((LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.view_custom_marker, null);
+        ImageView mMarkerImageView = (ImageView) mCustomMarkerView.findViewById(R.id.profile_image);
+
+        mMarkerImageView.setImageResource(resId);
+        mCustomMarkerView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+        mCustomMarkerView.layout(0, 0, mCustomMarkerView.getMeasuredWidth(), mCustomMarkerView.getMeasuredHeight());
+        mCustomMarkerView.buildDrawingCache();
+        Bitmap returnedBitmap = Bitmap.createBitmap(mCustomMarkerView.getMeasuredWidth(), mCustomMarkerView.getMeasuredHeight(),
+                Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(returnedBitmap);
+        canvas.drawColor(Color.WHITE, PorterDuff.Mode.SRC_IN);
+        Drawable drawable = mCustomMarkerView.getBackground();
+        if (drawable != null)
+            drawable.draw(canvas);
+        mCustomMarkerView.draw(canvas);
+        return returnedBitmap;
+    }
+
 }

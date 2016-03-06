@@ -9,6 +9,7 @@ import android.view.MenuItem;
 
 import pibes.yallegue.R;
 import pibes.yallegue.common.BaseActivity;
+import pibes.yallegue.data.DataFactory;
 
 public class SearchActivity extends BaseActivity implements SearchView.OnQueryTextListener  {
 
@@ -64,6 +65,8 @@ public class SearchActivity extends BaseActivity implements SearchView.OnQueryTe
 
     @Override
     public boolean onQueryTextSubmit(String query) {
+
+
         return false;
     }
 
@@ -71,4 +74,5 @@ public class SearchActivity extends BaseActivity implements SearchView.OnQueryTe
     public boolean onQueryTextChange(String newText) {
         return false;
     }
+
 }

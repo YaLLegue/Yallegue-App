@@ -23,5 +23,5 @@ public interface DataService {
     Observable<TrailResponse> getTrails();
 
     @GET(DataConstants.ENDPOINT_USERS)
-    Observable<UserResponse> getUsers();
+    Observable<UserResponse> getUsers(@Path("user_name") String userName);
 }
