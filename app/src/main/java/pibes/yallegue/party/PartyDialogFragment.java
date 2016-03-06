@@ -1,6 +1,5 @@
 package pibes.yallegue.party;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
@@ -11,7 +10,6 @@ import android.view.ViewGroup;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import pibes.yallegue.R;
-import pibes.yallegue.searchuser.SearchActivity;
 
 /**
  * Created by Jhordan on 06/03/16.
@@ -35,8 +33,8 @@ public class PartyDialogFragment extends DialogFragment {
 
     @OnClick(R.id.label_new_party)
     public void onClickNewParty() {
-        Intent intent = new Intent(getContext(), SearchActivity.class);
-        startActivity(intent);
+        CreatePartyDialog createPartyDialog = CreatePartyDialog.newInstance();
+        createPartyDialog.show(getActivity().getFragmentManager(), "");
 
     }
 }

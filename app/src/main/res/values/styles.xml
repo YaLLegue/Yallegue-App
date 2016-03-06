@@ -36,4 +36,11 @@
         <item name="android:textStyle">bold</item>
     </style>
 
+    <style name="Widget.Button.Invite" parent="android:Widget">
+        <item name="android:gravity">center_vertical|center_horizontal</item>
+        <item name="android:background">@drawable/button_invite</item>
+        <item name="android:textAppearance">?android:textAppearanceMedium</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textStyle">bold</item>
+    </style>
 </resources>
