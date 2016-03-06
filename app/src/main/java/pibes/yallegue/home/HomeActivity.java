@@ -5,12 +5,12 @@ import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.FloatingActionButton;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -35,12 +35,11 @@ import java.util.List;
 import butterknife.Bind;
 import pibes.yallegue.R;
 import pibes.yallegue.common.BaseActivity;
+import pibes.yallegue.party.PartyDialogFragment;
 import pibes.yallegue.receive.PushNotificationApp;
 import pibes.yallegue.utils.ConstantsPlayer;
-import pibes.yallegue.party.PartyDialogFragment;
 
-public class HomeActivity extends BaseActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, OnMapReadyCallback {
-public class HomeActivity extends BaseActivity implements HomeContract.View {
+public class HomeActivity extends BaseActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, OnMapReadyCallback, HomeContract.View {
 
 
     private static final String LOG_TAG = HomeActivity.class.getSimpleName();
@@ -79,6 +78,7 @@ public class HomeActivity extends BaseActivity implements HomeContract.View {
         buildGoogleApiClient();
         setupMap();
         checkNotification(getIntent());
+
     }
 
     @Override
@@ -94,8 +94,6 @@ public class HomeActivity extends BaseActivity implements HomeContract.View {
     }
 
     private void setupBottomSheet() {
-        BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from(mHomeBottomSheet);
-        setBottomSheetCallback(bottomSheetBehavior);
         if (mHomePresenter == null)
             mHomePresenter = new HomePresenter(this);
 
@@ -104,26 +102,6 @@ public class HomeActivity extends BaseActivity implements HomeContract.View {
 
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-
-        mButtonHome.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mHomePresenter.startGame();
-            }
-        });
-
-        mButtonParty.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                mHomePresenter.play();
-            }
-        });
-
-    }
 
     private void setBottomSheetCallback(final BottomSheetBehavior bottomSheetBehavior) {
 
@@ -144,18 +122,9 @@ public class HomeActivity extends BaseActivity implements HomeContract.View {
             public void onSlide(@NonNull View bottomSheet, float slideOffset) {
             }
         });
-
-
-            }
-        });
-    }
     }
 
-    private void buildGoogleApiClient() {
-        mGoogleApiClient = new GoogleApiClient.Builder(this).addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(LocationServices.API).build();
-    }
+
     @Override
     public void showBottomSheetContent() {
         mBottomSheetContent.setVisibility(View.VISIBLE);
@@ -163,19 +132,77 @@ public class HomeActivity extends BaseActivity implements HomeContract.View {
 
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        connectGoogleApiClient();
-    @Override
     public void hideBottomSheetContent() {
         mBottomSheetContent.setVisibility(View.INVISIBLE);
     }
+
+
+    @Override
+    public void bottomSheetBehaviorExpanded() {
+        mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+    }
+
+    @Override
+    public void bottomSheetBehaviorCollapsed() {
+        mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+    }
+
+    @Override
+    public int getState() {
+        return mBottomSheetBehavior.getState();
+    }
+
+    @Override
+    public void draggableBottomSheet() {
+        if (getState() == BottomSheetBehavior.STATE_COLLAPSED) {
+            showBottomSheetContent();
+            bottomSheetBehaviorExpanded();
+        } else
+            bottomSheetBehaviorCollapsed();
+
+    }
+
+    @Override
+    public void showDialogParty() {
+        PartyDialogFragment partyDialogFragment = PartyDialogFragment.newInstance();
+        partyDialogFragment.show(getSupportFragmentManager(), "");
+    }
+
 
     private void connectGoogleApiClient() {
         if (!mGoogleApiClient.isConnected() && !mGoogleApiClient.isConnecting()) {
             mGoogleApiClient.connect();
         }
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        connectGoogleApiClient();
+
+        mButtonHome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mHomePresenter.startGame();
+            }
+        });
+
+        mButtonParty.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mHomePresenter.play();
+            }
+        });
+
+    }
+
+
+    private void buildGoogleApiClient() {
+        mGoogleApiClient = new GoogleApiClient.Builder(this).addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API).build();
+    }
+
 
     @Override
     protected void onStop() {
@@ -219,16 +246,12 @@ public class HomeActivity extends BaseActivity implements HomeContract.View {
 
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
 
-        if (myMarker == null) {
-            myMarker = map.addMarker(new MarkerOptions()
-                    .position(latLng)
-                    .icon(BitmapDescriptorFactory
-                            .defaultMarker(ConstantsPlayer.TYPE_PLAYER == 1 ? BitmapDescriptorFactory.HUE_GREEN :
-                                    BitmapDescriptorFactory.HUE_RED)));
-        } else {
-            myMarker.setPosition(latLng);
-        }
+        showMarker(latLng);
 
+        showPolyline(latLng);
+    }
+
+    private void showPolyline(LatLng latLng) {
         if (myPolyline == null) {
             myPoints = new ArrayList<LatLng>();
             myPoints.add(latLng);
@@ -241,6 +264,19 @@ public class HomeActivity extends BaseActivity implements HomeContract.View {
         }
         map.animateCamera(CameraUpdateFactory.newLatLng(latLng));
     }
+
+    private void showMarker(LatLng latLng) {
+        if (myMarker == null) {
+            myMarker = map.addMarker(new MarkerOptions()
+                    .position(latLng)
+                    .icon(BitmapDescriptorFactory
+                            .defaultMarker(ConstantsPlayer.TYPE_PLAYER == 1 ? BitmapDescriptorFactory.HUE_GREEN :
+                                    BitmapDescriptorFactory.HUE_RED)));
+        } else {
+            myMarker.setPosition(latLng);
+        }
+    }
+
 
     private void startLocationUpdates() {
         mRequestingLocationUpdates = true;
@@ -271,45 +307,10 @@ public class HomeActivity extends BaseActivity implements HomeContract.View {
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(googleMexico, 17));
     }
 
-
-
-
     private void checkNotification(Intent intent) {
         if (intent.hasExtra(PushNotificationApp.EXTRA_START)) {
             Toast.makeText(this, "Inicia Juego", Toast.LENGTH_SHORT).show();
         }
-    }
-
-
-    @Override
-    public void bottomSheetBehaviorExpanded() {
-        mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-    }
-
-    @Override
-    public void bottomSheetBehaviorCollapsed() {
-        mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-    }
-
-    @Override
-    public int getState() {
-        return mBottomSheetBehavior.getState();
-    }
-
-    @Override
-    public void draggableBottomSheet() {
-        if (getState() == BottomSheetBehavior.STATE_COLLAPSED) {
-            showBottomSheetContent();
-            bottomSheetBehaviorExpanded();
-        } else
-            bottomSheetBehaviorCollapsed();
-
-    }
-
-    @Override
-    public void showDialogParty() {
-        PartyDialogFragment partyDialogFragment = PartyDialogFragment.newInstance();
-        partyDialogFragment.show(getSupportFragmentManager(),"");
     }
 
 }
