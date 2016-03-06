@@ -5,9 +5,11 @@ import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
-import android.util.Log;
+import android.support.design.widget.FloatingActionButton;
 import android.view.View;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
@@ -35,13 +37,27 @@ import pibes.yallegue.R;
 import pibes.yallegue.common.BaseActivity;
 import pibes.yallegue.receive.PushNotificationApp;
 import pibes.yallegue.utils.ConstantsPlayer;
+import pibes.yallegue.party.PartyDialogFragment;
 
 public class HomeActivity extends BaseActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, OnMapReadyCallback {
+public class HomeActivity extends BaseActivity implements HomeContract.View {
 
 
     private static final String LOG_TAG = HomeActivity.class.getSimpleName();
     @Bind(R.id.bottom_sheet_home)
-    FrameLayout mHomeBottomSheet;
+    FrameLayout mBottomSheetHome;
+
+    @Bind(R.id.bottom_sheet_content)
+    LinearLayout mBottomSheetContent;
+
+    @Bind(R.id.button_home)
+    FloatingActionButton mButtonHome;
+
+    @Bind(R.id.button_party)
+    Button mButtonParty;
+
+    private BottomSheetBehavior mBottomSheetBehavior;
+    private HomePresenter mHomePresenter;
 
     private GoogleApiClient mGoogleApiClient;
     private boolean mRequestingLocationUpdates = true;
@@ -80,44 +96,59 @@ public class HomeActivity extends BaseActivity implements GoogleApiClient.Connec
     private void setupBottomSheet() {
         BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from(mHomeBottomSheet);
         setBottomSheetCallback(bottomSheetBehavior);
+        if (mHomePresenter == null)
+            mHomePresenter = new HomePresenter(this);
+
+        mBottomSheetBehavior = BottomSheetBehavior.from(mBottomSheetHome);
+        setBottomSheetCallback(mBottomSheetBehavior);
+
     }
 
-    private void setBottomSheetCallback(final BottomSheetBehavior bottomSheetBehavior){
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+
+        mButtonHome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mHomePresenter.startGame();
+            }
+        });
+
+        mButtonParty.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mHomePresenter.play();
+            }
+        });
+
+    }
+
+    private void setBottomSheetCallback(final BottomSheetBehavior bottomSheetBehavior) {
 
         bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
-            public void onStateChanged(View bottomSheet, int newState) {
-                String nuevoEstado = "";
-
-                switch(newState) {
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                switch (newState) {
                     case BottomSheetBehavior.STATE_COLLAPSED:
-                        nuevoEstado = "STATE_COLLAPSED";
-                        break;
-                    case BottomSheetBehavior.STATE_EXPANDED:
-                        nuevoEstado = "STATE_EXPANDED";
-                        break;
-                    case BottomSheetBehavior.STATE_HIDDEN:
-                        nuevoEstado = "STATE_HIDDEN";
+                        hideBottomSheetContent();
                         break;
                     case BottomSheetBehavior.STATE_DRAGGING:
-                        nuevoEstado = "STATE_DRAGGING";
-
-                        break;
-                    case BottomSheetBehavior.STATE_SETTLING:
-                        nuevoEstado = "STATE_SETTLING";
+                        showBottomSheetContent();
                         break;
                 }
-
-                Log.i("BottomSheets", "Nuevo estado: " + nuevoEstado);
             }
 
             @Override
-            public void onSlide(View bottomSheet, float slideOffset) {
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+            }
+        });
 
-                Log.i("BottomSheets", "Offset: " + slideOffset);
 
             }
         });
+    }
     }
 
     private void buildGoogleApiClient() {
@@ -125,12 +156,19 @@ public class HomeActivity extends BaseActivity implements GoogleApiClient.Connec
                 .addOnConnectionFailedListener(this)
                 .addApi(LocationServices.API).build();
     }
+    @Override
+    public void showBottomSheetContent() {
+        mBottomSheetContent.setVisibility(View.VISIBLE);
+    }
 
 
     @Override
     protected void onResume() {
         super.onResume();
         connectGoogleApiClient();
+    @Override
+    public void hideBottomSheetContent() {
+        mBottomSheetContent.setVisibility(View.INVISIBLE);
     }
 
     private void connectGoogleApiClient() {
@@ -240,6 +278,38 @@ public class HomeActivity extends BaseActivity implements GoogleApiClient.Connec
         if (intent.hasExtra(PushNotificationApp.EXTRA_START)) {
             Toast.makeText(this, "Inicia Juego", Toast.LENGTH_SHORT).show();
         }
+    }
+
+
+    @Override
+    public void bottomSheetBehaviorExpanded() {
+        mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+    }
+
+    @Override
+    public void bottomSheetBehaviorCollapsed() {
+        mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+    }
+
+    @Override
+    public int getState() {
+        return mBottomSheetBehavior.getState();
+    }
+
+    @Override
+    public void draggableBottomSheet() {
+        if (getState() == BottomSheetBehavior.STATE_COLLAPSED) {
+            showBottomSheetContent();
+            bottomSheetBehaviorExpanded();
+        } else
+            bottomSheetBehaviorCollapsed();
+
+    }
+
+    @Override
+    public void showDialogParty() {
+        PartyDialogFragment partyDialogFragment = PartyDialogFragment.newInstance();
+        partyDialogFragment.show(getSupportFragmentManager(),"");
     }
 
 }

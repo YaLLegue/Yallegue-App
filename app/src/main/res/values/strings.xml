@@ -1,5 +1,9 @@
 <resources>
     <string name="facebook_app_id">1729746600605403</string>
-    <string name="app_name">Ya llegue</string>
+    <string name="app_name">Ya llegué</string>
     <string name="google_maps_key">AIzaSyBLlQxJ3v9jSBZitChM9W8AmS_n8FuVw8s</string>
+    <string name="transport_destine">ELIGE El TRASNPORTE DE TU DESTINO</string>
+    <string name="cars">Taxi, Uber, Auto propio</string>
+    <string name="destine">Destino</string>
+    <string name="walk">Voy a caminar</string>
 </resources>
