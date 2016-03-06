@@ -8,6 +8,8 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.FloatingActionButton;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -55,6 +57,9 @@ public class HomeActivity extends BaseActivity implements GoogleApiClient.Connec
     @Bind(R.id.button_party)
     Button mButtonParty;
 
+    @Bind(R.id.auto_text)
+    AutoCompleteTextView mAutoCompleteText;
+
     private BottomSheetBehavior mBottomSheetBehavior;
     private HomePresenter mHomePresenter;
 
@@ -78,6 +83,14 @@ public class HomeActivity extends BaseActivity implements GoogleApiClient.Connec
         buildGoogleApiClient();
         setupMap();
         checkNotification(getIntent());
+
+        String[] stations = {"Constiyentes", "Constitución"};
+
+        ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(this,
+                android.R.layout.select_dialog_item, stations);
+
+        mAutoCompleteText.setThreshold(1);
+        mAutoCompleteText.setAdapter(arrayAdapter);
 
     }
 
