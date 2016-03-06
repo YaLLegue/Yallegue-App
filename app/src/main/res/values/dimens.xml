@@ -7,7 +7,7 @@
     <dimen name="item_news_large_margin">16dp</dimen>
 
 
-    <dimen name="bottom_sheet_home">300dp</dimen>
+    <dimen name="bottom_sheet_home">400dp</dimen>
 
     <dimen name="spacing_xsmall">2dp</dimen>
     <dimen name="spacing_small">4dp</dimen>
