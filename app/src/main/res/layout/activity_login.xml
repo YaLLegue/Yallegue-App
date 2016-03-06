@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:facebook="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="pibes.yallegue.login.LoginActivity">
+
+
+    <ImageView
+        android:id="@+id/image_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:contentDescription="@string/app_name"
+        android:scaleType="centerCrop"
+        android:src="@drawable/background_login" />
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="120dp"
+        android:text="Ya llegue"
+        android:textColor="@color/primary_text_white"
+        android:textSize="48sp"
+        android:textStyle="bold" />
+
+
+    <com.facebook.login.widget.LoginButton
+        android:id="@+id/login_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:layout_marginBottom="80dp"
+        android:layout_marginLeft="@dimen/item_news_large_margin"
+        android:layout_marginRight="@dimen/item_news_large_margin"
+        android:drawableLeft="@null"
+        android:drawableStart="@null"
+        android:paddingBottom="@dimen/item_news_large_margin"
+        android:paddingTop="@dimen/item_news_large_margin"
+        facebook:com_facebook_confirm_logout="false"
+        facebook:com_facebook_login_text="Entrar con Facebook" />
+
+</FrameLayout>
