@@ -7,7 +7,6 @@ import com.google.gson.annotations.SerializedName;
  */
 public class User {
 
-
     @SerializedName("_id")
     private String mId;
 
@@ -29,4 +28,15 @@ public class User {
         mPhoto = photo;
     }
 
+    public String getmId() {
+        return mId;
+    }
+
+    public String getmUserName() {
+        return mUserName;
+    }
+
+    public String getmPhoto() {
+        return mPhoto;
+    }
 }

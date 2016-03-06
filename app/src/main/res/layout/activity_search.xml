@@ -24,9 +24,27 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/list_users"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent">
+
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/list_users"
+            android:layout_width="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            android:layout_height="match_parent"/>
+
+        <Button
+            android:textColor="@color/secondary_text_white"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:textStyle="bold"
+            android:padding="16dp"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Jugar"/>
+
+    </FrameLayout>
 
 </android.support.design.widget.CoordinatorLayout>

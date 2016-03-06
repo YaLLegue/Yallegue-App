@@ -9,12 +9,20 @@ import android.view.MenuItem;
 
 import pibes.yallegue.R;
 import pibes.yallegue.common.BaseActivity;
+import pibes.yallegue.data.DataFactory;
 
 public class SearchActivity extends BaseActivity implements SearchView.OnQueryTextListener  {
 
     @Override
     protected int getLayout() {
         return R.layout.activity_search;
+    }
+
+    @Override
+    public void initView() {
+        super.initView();
+
+
     }
 
     @Override
@@ -57,6 +65,8 @@ public class SearchActivity extends BaseActivity implements SearchView.OnQueryTe
 
     @Override
     public boolean onQueryTextSubmit(String query) {
+
+
         return false;
     }
 
@@ -64,4 +74,5 @@ public class SearchActivity extends BaseActivity implements SearchView.OnQueryTe
     public boolean onQueryTextChange(String newText) {
         return false;
     }
+
 }

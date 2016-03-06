@@ -50,6 +50,18 @@
             android:textSize="14sp"
             tools:text="gary.allen@example.com"/>
 
+
+        <CheckBox
+            android:id="@+id/checkbox_user"
+            android:layout_centerVertical="true"
+            android:layout_width="wrap_content"
+            android:layout_margin="12dp"
+            android:clickable="false"
+            android:focusable="false"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_height="wrap_content"/>
+
     </RelativeLayout>
 
 
