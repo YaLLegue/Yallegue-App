@@ -18,6 +18,13 @@ public class SearchActivity extends BaseActivity implements SearchView.OnQueryTe
     }
 
     @Override
+    public void initView() {
+        super.initView();
+
+
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_search, menu);
         initSearchView(menu);
