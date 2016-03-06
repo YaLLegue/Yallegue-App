@@ -13,4 +13,5 @@ public class DataConstants {
     public static final String ENDPOINT_PARTYS = "/v1/partidas";
     public static final String ENDPOINT_PARTYS_AVANCE = "/v1/partidas/{id}/avance";
 
+
 }

@@ -1,7 +1,7 @@
 package pibes.yallegue.home;
 
-import android.content.Context;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -10,11 +10,13 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.FloatingActionButton;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -27,7 +29,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import com.facebook.login.LoginManager;
 import com.google.android.gms.common.ConnectionResult;
@@ -45,23 +46,32 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.squareup.okhttp.ResponseBody;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
 import pibes.yallegue.R;
+import pibes.yallegue.YaLlegueApplication;
 import pibes.yallegue.common.BaseActivity;
+import pibes.yallegue.data.DataService;
 import pibes.yallegue.login.LoginActivity;
+import pibes.yallegue.model.Avance;
+import pibes.yallegue.model.Reference;
 import pibes.yallegue.party.PartyDialogFragment;
 import pibes.yallegue.preference.AppPreferences;
 import pibes.yallegue.receive.PushNotificationApp;
 import pibes.yallegue.utils.ConstantsPlayer;
+import retrofit.Response;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 
 public class HomeActivity extends BaseActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, LocationListener, OnMapReadyCallback, HomeContract.View {
 
 
     private static final String LOG_TAG = HomeActivity.class.getSimpleName();
+    private static final String ID_PARTY = "56dc8b3a933fd92d05000001";
     @Bind(R.id.bottom_sheet_home)
     FrameLayout mBottomSheetHome;
 
@@ -105,6 +115,10 @@ public class HomeActivity extends BaseActivity implements GoogleApiClient.Connec
     private List<LatLng> myPoints;
 
     private ArrayAdapter<String> mAdapter;
+    private boolean obtainAvance = true;
+    private Polyline myPolylineRiver;
+    private Marker myMarkerRiver;
+
 
     @Override
     protected int getLayout() {
@@ -119,6 +133,7 @@ public class HomeActivity extends BaseActivity implements GoogleApiClient.Connec
         buildGoogleApiClient();
         setupMap();
         checkNotification(getIntent());
+        startRequest();
     }
 
     @Override
@@ -323,7 +338,9 @@ public class HomeActivity extends BaseActivity implements GoogleApiClient.Connec
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         showMarker(latLng);
         showPolyline(latLng);
+        senPosition(latLng);
     }
+
 
     private void showPolyline(LatLng latLng) {
         if (myPolyline == null) {
@@ -384,8 +401,17 @@ public class HomeActivity extends BaseActivity implements GoogleApiClient.Connec
 
     private void checkNotification(Intent intent) {
         if (intent.hasExtra(PushNotificationApp.EXTRA_START)) {
-            Toast.makeText(this, "Inicia Juego", Toast.LENGTH_SHORT).show();
+            mRequestingLocationUpdates = true;
+            obtainAvance = true;
+            connectGoogleApiClient();
+            startRequest();
+            hideBottomSheetContent();
+            hideButton();
         }
+    }
+
+    private void hideButton() {
+        mButtonHome.hide();
     }
 
 
@@ -473,5 +499,110 @@ public class HomeActivity extends BaseActivity implements GoogleApiClient.Connec
         mCustomMarkerView.draw(canvas);
         return returnedBitmap;
     }
+
+    private void startRequest() {
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (obtainAvance) {
+                    Log.d("get dates", "true");
+                    obtainAvance();
+                    startRequest();
+                }
+            }
+        }, 5000);
+    }
+
+    private void obtainAvance() {
+        YaLlegueApplication llegueApplication = YaLlegueApplication.create(this);
+
+        DataService dataService = llegueApplication.getDataService();
+
+
+        dataService.getAvanceUser(ID_PARTY).observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(llegueApplication.subscribeScheduler()).subscribe(new Action1<List<Avance>>() {
+
+            @Override
+            public void call(List<Avance> avances) {
+
+                Log.d("get dates", "avances: " + avances.size());
+
+
+                if (avances.isEmpty()) {
+                    return;
+                }
+
+                List<LatLng> latLngs = new ArrayList<LatLng>();
+                for (Avance avance : avances) {
+                    if (!avance.getUsername().equals(ConstantsPlayer.TYPE_PLAYER == 1 ? "amet" : "deadpool")) {
+                        double latitude = Double.parseDouble(avance.getLatitude());
+                        double longitude = Double.parseDouble(avance.getLongitud());
+                        latLngs.add(new LatLng(latitude, longitude));
+                    } else {
+                        Log.d("no enter", "false");
+                    }
+                }
+
+                if (myMarkerRiver == null) {
+                    myMarkerRiver = map.addMarker(new MarkerOptions()
+                            .position(latLngs.get(latLngs.size() - 1))
+                            .icon(BitmapDescriptorFactory
+                                    .fromBitmap(getMarkerBitmapFromView(ConstantsPlayer.TYPE_PLAYER == 1 ? R.drawable.player_2 : R.drawable.player_1))));
+                } else {
+                    myMarkerRiver.setPosition(latLngs.get(latLngs.size() - 1));
+                }
+
+                if (myPolylineRiver == null) {
+                    myPolylineRiver = map.addPolyline(new PolylineOptions()
+                            .addAll(latLngs)
+                            .color(ConstantsPlayer.TYPE_PLAYER == 1 ? getResources().getColor(R.color.player_2) : getResources().getColor(R.color.player_1)));
+                } else {
+                    myPolylineRiver.setPoints(latLngs);
+                }
+
+            }
+        }, new Action1<Throwable>() {
+            @Override
+            public void call(Throwable throwable) {
+                Log.d("sendAvanceUser", "error");
+                throwable.printStackTrace();
+            }
+        });
+
+    }
+
+
+    private void senPosition(LatLng latLng) {
+        YaLlegueApplication llegueApplication = YaLlegueApplication.create(this);
+
+        Avance avance = new Avance(ConstantsPlayer.TYPE_PLAYER == 1 ? "amet" : "deadpool", latLng.latitude + "", latLng.longitude + "");
+
+        Reference reference = new Reference(avance);
+
+        DataService dataService = llegueApplication.getDataService();
+        dataService.sendAvanceUser(ID_PARTY, reference).observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(llegueApplication.subscribeScheduler()).subscribe(new Action1<Response<ResponseBody>>() {
+            @Override
+            public void call(Response response) {
+                Log.d("sendAvanceUser", "success");
+
+            }
+        }, new Action1<Throwable>() {
+            @Override
+            public void call(Throwable throwable) {
+                Log.d("sendAvanceUser", "error");
+                throwable.printStackTrace();
+            }
+        });
+    }
+
+
+
+
+
+
+
+
 
 }
