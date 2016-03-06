@@ -9,7 +9,7 @@ import retrofit.RxJavaCallAdapterFactory;
  */
 public class DataFactory {
 
-    private final static String BASE_URL = "";
+    private final static String BASE_URL = "http://82.196.13.137:8888/v1";
 
     public static DataFactory create(){
         Retrofit retrofit = new Retrofit.Builder()
