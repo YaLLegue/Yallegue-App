@@ -1,17 +1,33 @@
 package pibes.yallegue.searchuser;
 
 import android.support.v4.view.MenuItemCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.util.List;
+
+import butterknife.Bind;
+import butterknife.OnClick;
 import pibes.yallegue.R;
+import pibes.yallegue.YaLlegueApplication;
 import pibes.yallegue.common.BaseActivity;
-import pibes.yallegue.data.DataFactory;
+import pibes.yallegue.data.DataService;
+import pibes.yallegue.model.User;
+import pibes.yallegue.model.UserResponse;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 
 public class SearchActivity extends BaseActivity implements SearchView.OnQueryTextListener  {
+
+    private static final String LOG_TAG = SearchActivity.class.getSimpleName();
+    @Bind(R.id.list_users)
+    RecyclerView mRecyclerViewUsers;
+    private SearchUserListAdapter searchUserListAdapter;
+
 
     @Override
     protected int getLayout() {
@@ -21,8 +37,14 @@ public class SearchActivity extends BaseActivity implements SearchView.OnQueryTe
     @Override
     public void initView() {
         super.initView();
+        setupListUser();
+        requestUser("");
+    }
 
-
+    private void setupListUser() {
+        searchUserListAdapter = new SearchUserListAdapter(this);
+        mRecyclerViewUsers.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false));
+        mRecyclerViewUsers.setAdapter(searchUserListAdapter);
     }
 
     @Override
@@ -65,8 +87,7 @@ public class SearchActivity extends BaseActivity implements SearchView.OnQueryTe
 
     @Override
     public boolean onQueryTextSubmit(String query) {
-
-
+        requestUser(query);
         return false;
     }
 
@@ -75,4 +96,31 @@ public class SearchActivity extends BaseActivity implements SearchView.OnQueryTe
         return false;
     }
 
+
+    private void requestUser(final String user) {
+        YaLlegueApplication llegueApplication = YaLlegueApplication.create(this);
+
+        DataService dataService = llegueApplication.getDataService();
+        dataService.getUsers(user).observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(llegueApplication.subscribeScheduler()).subscribe(new Action1<UserResponse>() {
+            @Override
+            public void call(UserResponse userResponse) {
+                Log.d(LOG_TAG, "success");
+                List<User> users = userResponse.getUserList();
+                searchUserListAdapter.setUsers(users);
+            }
+        }, new Action1<Throwable>() {
+            @Override
+            public void call(Throwable throwable) {
+                Log.d(LOG_TAG, "error");
+                throwable.printStackTrace();
+            }
+        });
+
+    }
+
+    @OnClick(R.id.button_play)
+    public void playGame() {
+
+    }
 }
