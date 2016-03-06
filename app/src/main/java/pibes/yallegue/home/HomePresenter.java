@@ -3,10 +3,13 @@ package pibes.yallegue.home;
 import android.content.Context;
 import android.database.Observable;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.OnClick;
+import pibes.yallegue.R;
 import pibes.yallegue.YaLlegueApplication;
 import pibes.yallegue.data.DataService;
 import pibes.yallegue.model.Station;
@@ -95,6 +98,8 @@ public class HomePresenter implements HomeContract.UserActionListener {
         });
 
     }
+
+
 
 
 }

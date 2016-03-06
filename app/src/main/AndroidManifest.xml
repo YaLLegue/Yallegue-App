@@ -100,11 +100,8 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".searchuser.SearchUser">
-        </activity>
-        <activity
-            android:name=".searchuser.SearchActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+        <activity android:name=".searchuser.SearchActivity"
+            android:screenOrientation="portrait">
         </activity>
     </application>
 

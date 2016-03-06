@@ -2,6 +2,7 @@ package pibes.yallegue.searchuser;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +25,7 @@ import pibes.yallegue.model.User;
  */
 public class SearchUserListAdapter extends RecyclerView.Adapter<SearchUserListAdapter.ViewHolderUser> {
 
+    private static final String LOG_TAG = SearchUserListAdapter.class.getSimpleName();
     private LayoutInflater layoutInflater;
     private List<User> users;
 
@@ -39,11 +41,13 @@ public class SearchUserListAdapter extends RecyclerView.Adapter<SearchUserListAd
 
     @Override
     public ViewHolderUser onCreateViewHolder(ViewGroup parent, int viewType) {
+        Log.d(LOG_TAG, "onCreateViewHolder");
         return new ViewHolderUser(layoutInflater.inflate(R.layout.item_people, parent, false));
     }
 
     @Override
     public void onBindViewHolder(ViewHolderUser holder, int position) {
+        Log.d(LOG_TAG, "onBindViewHolder");
         holder.setData(users.get(position));
     }
 
@@ -72,7 +76,7 @@ public class SearchUserListAdapter extends RecyclerView.Adapter<SearchUserListAd
 
         public void setData(User user) {
             userName.setText(user.getmUserName());
-            Picasso.with(layoutInflater.getContext()).load(user.getmPhoto()).centerCrop().into(imageUser);
+            Picasso.with(layoutInflater.getContext()).load(user.getmPhoto()).into(imageUser);
         }
 
         @Override
