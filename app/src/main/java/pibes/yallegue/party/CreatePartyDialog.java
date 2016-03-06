@@ -1,4 +1,4 @@
-package pibes.yallegue.home;
+package pibes.yallegue.party;
 
 import android.app.DialogFragment;
 import android.os.Bundle;
@@ -12,16 +12,16 @@ import pibes.yallegue.R;
 /**
  * Created by Jhordan on 05/03/16.
  */
-public class HomeBottomSheetDialog extends DialogFragment {
+public class CreatePartyDialog extends DialogFragment {
 
-    public static HomeBottomSheetDialog newInstance() {
-        return new HomeBottomSheetDialog();
+    public static CreatePartyDialog newInstance() {
+        return new CreatePartyDialog();
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.dialog_home_sheet_bottom, container, false);
+        View view = inflater.inflate(R.layout.dialog_create_fragment, container, false);
         return view;
     }
 }
