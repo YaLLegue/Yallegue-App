@@ -23,6 +23,8 @@
 
         <activity android:name=".home.HomeActivity"
                   android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
@@ -37,9 +39,6 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".MainActivity">
-
-        </activity>
 
         <activity
             android:name="com.facebook.FacebookActivity"

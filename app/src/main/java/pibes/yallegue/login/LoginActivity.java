@@ -3,7 +3,6 @@ package pibes.yallegue.login;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.widget.ImageView;
 
 import com.facebook.CallbackManager;
@@ -15,8 +14,8 @@ import com.squareup.picasso.Picasso;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import pibes.yallegue.MainActivity;
 import pibes.yallegue.R;
+import pibes.yallegue.home.HomeActivity;
 import pibes.yallegue.preference.AppPreferences;
 
 public class LoginActivity extends AppCompatActivity implements FacebookCallback<LoginResult> {
@@ -27,7 +26,6 @@ public class LoginActivity extends AppCompatActivity implements FacebookCallback
     @Bind(R.id.login_button)
     LoginButton facebookLoginButton;
     CallbackManager callbackManager;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,8 +59,6 @@ public class LoginActivity extends AppCompatActivity implements FacebookCallback
                 .into(imageBackground);
     }
 
-
-
     @Override
     public void onSuccess(LoginResult loginResult) {
         AppPreferences.getInstance(this).saveLogin(true);
@@ -80,7 +76,7 @@ public class LoginActivity extends AppCompatActivity implements FacebookCallback
     }
 
     public void launchHomeActivity() {
-        startActivity(new Intent(this, MainActivity.class));
+        startActivity(new Intent(this, HomeActivity.class));
         finish();
     }
 
