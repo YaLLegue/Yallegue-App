@@ -1,5 +1,8 @@
 package pibes.yallegue.data;
 
+import java.util.List;
+
+import pibes.yallegue.model.Station;
 import pibes.yallegue.model.Subway;
 import pibes.yallegue.model.TrailResponse;
 import pibes.yallegue.model.UserResponse;
@@ -15,6 +18,9 @@ public interface DataService {
 
     @GET(DataConstants.ENDPOINT_STATION)
     Observable<Subway> getStation();
+
+    @GET(DataConstants.ENDPOINT_METRO_NARANJA)
+    Observable<List<Station>> getOrangeStation();
 
     @GET(DataConstants.ENDPOINT_WINNER)
     Observable<Winner> getWinner(@Path("id") String id);

@@ -9,14 +9,14 @@ import retrofit.RxJavaCallAdapterFactory;
  */
 public class DataFactory {
 
-    private final static String BASE_URL = "http://82.196.13.137:8888/v1";
+    private final static String BASE_URL = "http://82.196.13.137:8888/";
 
-    public static DataFactory create(){
+    public static DataService create(){
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .build();
-        return retrofit.create(DataFactory.class);
+        return retrofit.create(DataService.class);
     }
 }

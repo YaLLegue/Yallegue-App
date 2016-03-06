@@ -34,7 +34,7 @@
                 android:layout_height="wrap_content"
                 android:src="@drawable/ic_directions_24dp"/>
 
-            <AutoCompleteTextView
+            <EditText
                 android:id="@+id/auto_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

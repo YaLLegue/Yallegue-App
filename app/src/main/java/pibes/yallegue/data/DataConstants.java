@@ -5,7 +5,8 @@ package pibes.yallegue.data;
  */
 public class DataConstants {
 
-    public static final String ENDPOINT_STATION = "/trail/Constituyentes";
+    public static final String ENDPOINT_STATION = "/v1/trail/Constituyentes";
+    public static final String ENDPOINT_METRO_NARANJA = "/v1/metro/naranja";
     public static final String ENDPOINT_TRAILS = "/trails/";
     public static final String ENDPOINT_USERS = "/users";
     public static final String ENDPOINT_WINNER = "/partidas/{id}/win";
