@@ -13,4 +13,7 @@
     <color name="secondary_text_white">#b2FFFFFF</color>
     <color name="divider_white">#4CFFFFFF</color>
 
+
+    <color name="transparent">@android:color/transparent</color>
+    <color name="white">@android:color/white</color>
 </resources>

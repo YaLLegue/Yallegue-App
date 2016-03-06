@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest package="pibes.yallegue"
-          xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest
+    package="pibes.yallegue"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -11,6 +12,17 @@
         android:supportsRtl="true"
         android:name=".YaLlegueApplication"
         android:theme="@style/AppTheme">
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key"/>
+
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version"/>
+
+        <activity android:name=".home.HomeActivity"
+                  android:theme="@style/AppTheme.NoActionBar">
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
