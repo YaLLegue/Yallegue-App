@@ -13,7 +13,12 @@
     <color name="secondary_text_white">#b2FFFFFF</color>
     <color name="divider_white">#4CFFFFFF</color>
 
-
     <color name="transparent">@android:color/transparent</color>
     <color name="white">@android:color/white</color>
+
+    <color name="player_2">#FF5252</color>
+    <color name="player_1">#009688</color>
+
+
+
 </resources>
