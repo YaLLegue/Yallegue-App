@@ -52,6 +52,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
+import butterknife.OnClick;
 import pibes.yallegue.R;
 import pibes.yallegue.YaLlegueApplication;
 import pibes.yallegue.common.BaseActivity;
@@ -59,6 +60,7 @@ import pibes.yallegue.data.DataService;
 import pibes.yallegue.login.LoginActivity;
 import pibes.yallegue.model.Avance;
 import pibes.yallegue.model.Reference;
+import pibes.yallegue.model.Winner;
 import pibes.yallegue.party.PartyDialogFragment;
 import pibes.yallegue.preference.AppPreferences;
 import pibes.yallegue.receive.PushNotificationApp;
@@ -71,7 +73,7 @@ public class HomeActivity extends BaseActivity implements GoogleApiClient.Connec
 
 
     private static final String LOG_TAG = HomeActivity.class.getSimpleName();
-    private static final String ID_PARTY = "56dc8b3a933fd92d05000001";
+    private static final String ID_PARTY = "56dca765c1c3fa2807000004";
     @Bind(R.id.bottom_sheet_home)
     FrameLayout mBottomSheetHome;
 
@@ -99,6 +101,9 @@ public class HomeActivity extends BaseActivity implements GoogleApiClient.Connec
     @Bind(R.id.destine_end_station)
     Spinner mDestineEndSpinner;
 
+    @Bind(R.id.button_win)
+    Button buttonWin;
+
     private ProgressDialog mProgressDialogHome;
 
     private int flag = 0;
@@ -108,14 +113,14 @@ public class HomeActivity extends BaseActivity implements GoogleApiClient.Connec
     private HomePresenter mHomePresenter;
 
     private GoogleApiClient mGoogleApiClient;
-    private boolean mRequestingLocationUpdates = true;
+    private boolean mRequestingLocationUpdates = false;
     private GoogleMap map;
     private Marker myMarker;
     private Polyline myPolyline;
     private List<LatLng> myPoints;
 
     private ArrayAdapter<String> mAdapter;
-    private boolean obtainAvance = true;
+    private boolean obtainAvance = false;
     private Polyline myPolylineRiver;
     private Marker myMarkerRiver;
 
@@ -133,12 +138,12 @@ public class HomeActivity extends BaseActivity implements GoogleApiClient.Connec
         buildGoogleApiClient();
         setupMap();
         checkNotification(getIntent());
-        startRequest();
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
+        Log.d(LOG_TAG, "onNewIntent");
         checkNotification(intent);
     }
 
@@ -317,23 +322,27 @@ public class HomeActivity extends BaseActivity implements GoogleApiClient.Connec
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        if (mRequestingLocationUpdates) {
-            startLocationUpdates();
-        }
+        Log.d("onConnected", "true");
+
+        startLocationUpdates();
     }
 
     @Override
     public void onConnectionSuspended(int i) {
+        Log.d("onConnectionSuspended", "true");
 
     }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        Log.d("onConnectionFailed", "true");
 
     }
 
     @Override
     public void onLocationChanged(Location location) {
+
+        Log.d("onLocationChanged", location.getLatitude() + "," + location.getLongitude());
 
         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
         showMarker(latLng);
@@ -386,7 +395,7 @@ public class HomeActivity extends BaseActivity implements GoogleApiClient.Connec
 
 
     protected void stopLocationUpdates() {
-        mRequestingLocationUpdates = false;
+//        mRequestingLocationUpdates = false;
         if (mGoogleApiClient.isConnected()) {
             LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
         }
@@ -407,7 +416,13 @@ public class HomeActivity extends BaseActivity implements GoogleApiClient.Connec
             startRequest();
             hideBottomSheetContent();
             hideButton();
+
+            showButtonWin();
         }
+    }
+
+    private void showButtonWin() {
+        buttonWin.setVisibility(View.VISIBLE);
     }
 
     private void hideButton() {
@@ -598,11 +613,39 @@ public class HomeActivity extends BaseActivity implements GoogleApiClient.Connec
     }
 
 
+    @OnClick(R.id.button_win)
+    public void buttonWin() {
+        YaLlegueApplication llegueApplication = YaLlegueApplication.create(this);
+        DataService dataService = llegueApplication.getDataService();
+        dataService.getWinner(ID_PARTY).observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(llegueApplication.subscribeScheduler()).subscribe(new Action1<Winner>() {
+            @Override
+            public void call(Winner winner) {
 
+                WinnnerDialog winnnerDialog;
 
+                if (winner.isSuccces()) {
+                    winnnerDialog = WinnnerDialog.newIntancer("Ganaste!! :)");
+                } else {
+                    winnnerDialog = WinnnerDialog.newIntancer("Perdiste!! :(");
+                }
 
+                winnnerDialog.show(getFragmentManager(), "");
 
-
+            }
+        }, new Action1<Throwable>() {
+            @Override
+            public void call(Throwable throwable) {
+                Log.d("sendAvanceUser", "error");
+                throwable.printStackTrace();
+            }
+        });
+    }
 
 
 }
+
+
+
+
+

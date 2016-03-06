@@ -12,7 +12,6 @@ import pibes.yallegue.home.HomeActivity;
  */
 public class PushNotificationApp extends ParsePushBroadcastReceiver {
 
-
     public static final String EXTRA_START = "start";
     public static final String START_GAME = "start_game";
 

@@ -27,6 +27,9 @@ public class PartyDialogFragment extends DialogFragment {
         View view = inflater.inflate(R.layout.dialog_fragment_party, container, false);
         ButterKnife.bind(this, view);
 
+
+
+
         return view;
     }
 
@@ -35,6 +38,7 @@ public class PartyDialogFragment extends DialogFragment {
     public void onClickNewParty() {
         CreatePartyDialog createPartyDialog = CreatePartyDialog.newInstance();
         createPartyDialog.show(getActivity().getFragmentManager(), "");
+        dismiss();
 
     }
 }

@@ -7,10 +7,13 @@ import com.google.gson.annotations.SerializedName;
  */
 public class Winner {
 
-    @SerializedName("winner")
-    private String mWinner;
+    private boolean succces;
 
-    public String getWinner() {
-        return mWinner;
+    public boolean isSuccces() {
+        return succces;
+    }
+
+    public void setSuccces(boolean succces) {
+        this.succces = succces;
     }
 }

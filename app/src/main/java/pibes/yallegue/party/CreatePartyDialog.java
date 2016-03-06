@@ -37,6 +37,7 @@ public class CreatePartyDialog extends DialogFragment {
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), SearchActivity.class);
                 getActivity().startActivity(intent);
+                dismiss();
             }
         });
         return view;

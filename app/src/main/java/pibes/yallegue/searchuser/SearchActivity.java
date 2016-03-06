@@ -1,5 +1,6 @@
 package pibes.yallegue.searchuser;
 
+import android.content.Intent;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,8 +17,10 @@ import pibes.yallegue.R;
 import pibes.yallegue.YaLlegueApplication;
 import pibes.yallegue.common.BaseActivity;
 import pibes.yallegue.data.DataService;
+import pibes.yallegue.home.HomeActivity;
 import pibes.yallegue.model.User;
 import pibes.yallegue.model.UserResponse;
+import pibes.yallegue.receive.PushNotificationApp;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 
@@ -122,10 +125,11 @@ public class SearchActivity extends BaseActivity implements SearchView.OnQueryTe
     @OnClick(R.id.button_play)
     public void playGame() {
 
+        Intent myIntent = new Intent(this, HomeActivity.class);
+        myIntent.putExtra(PushNotificationApp.EXTRA_START, PushNotificationApp.START_GAME);
+        startActivity(myIntent);
+        finish();
     }
-
-
-
 
 
 }

@@ -29,6 +29,16 @@
 
     <include layout="@layout/bottom_sheet_home"/>
 
+    <Button
+        android:id="@+id/button_win"
+        style="@style/Widget.Button.Invite"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:visibility="invisible"
+        android:layout_marginBottom="12dp"
+        android:layout_marginTop="@dimen/spacing_large"
+        android:text="Ya llegue"/>
 
 
 

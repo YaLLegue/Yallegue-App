@@ -101,7 +101,8 @@
         </receiver>
 
         <activity android:name=".searchuser.SearchActivity"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar">
         </activity>
     </application>
 
