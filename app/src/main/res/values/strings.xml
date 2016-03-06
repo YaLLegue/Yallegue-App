@@ -7,4 +7,5 @@
     <string name="destine">Destino</string>
     <string name="walk">Voy a caminar</string>
     <string name="search">Buscar Usuarios</string>
+    <string name="logout">Cerrar Sesión</string>
 </resources>

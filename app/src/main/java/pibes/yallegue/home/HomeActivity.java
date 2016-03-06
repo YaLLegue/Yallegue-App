@@ -7,6 +7,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.FloatingActionButton;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -15,6 +17,7 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.facebook.login.LoginManager;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
@@ -37,7 +40,9 @@ import java.util.List;
 import butterknife.Bind;
 import pibes.yallegue.R;
 import pibes.yallegue.common.BaseActivity;
+import pibes.yallegue.login.LoginActivity;
 import pibes.yallegue.party.PartyDialogFragment;
+import pibes.yallegue.preference.AppPreferences;
 import pibes.yallegue.receive.PushNotificationApp;
 import pibes.yallegue.utils.ConstantsPlayer;
 
@@ -326,4 +331,24 @@ public class HomeActivity extends BaseActivity implements GoogleApiClient.Connec
         }
     }
 
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_home, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (item.getItemId() == R.id.action_logout) {
+            AppPreferences.getInstance(getApplicationContext()).removePreference();
+            LoginManager.getInstance().logOut();
+            Intent intent = new Intent(this, LoginActivity.class);
+            startActivity(intent);
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
 }
