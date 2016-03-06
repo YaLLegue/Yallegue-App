@@ -1,7 +1,8 @@
 package pibes.yallegue.home;
 
+import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
-import android.util.Log;
+import android.support.design.widget.FloatingActionButton;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -10,11 +11,20 @@ import butterknife.Bind;
 import pibes.yallegue.R;
 import pibes.yallegue.common.BaseActivity;
 
-public class HomeActivity extends BaseActivity {
+public class HomeActivity extends BaseActivity implements HomeContract.View {
 
 
     @Bind(R.id.bottom_sheet_home)
-    FrameLayout mHomeBottomSheet;
+    FrameLayout mBottomSheetHome;
+
+    @Bind(R.id.bottom_sheet_content)
+    LinearLayout mBottomSheetContent;
+
+    @Bind(R.id.button_home)
+    FloatingActionButton mButtonHome;
+
+    private BottomSheetBehavior mBottomSheetBehavior;
+    private HomePresenter mHomePresenter;
 
 
     @Override
@@ -27,47 +37,84 @@ public class HomeActivity extends BaseActivity {
     public void initView() {
         super.initView();
 
-        BottomSheetBehavior bottomSheetBehavior = BottomSheetBehavior.from(mHomeBottomSheet);
-        setBottomSheetCallback(bottomSheetBehavior);
+        if (mHomePresenter == null)
+            mHomePresenter = new HomePresenter(this);
+
+        mBottomSheetBehavior = BottomSheetBehavior.from(mBottomSheetHome);
+        setBottomSheetCallback(mBottomSheetBehavior);
+
     }
 
-    private void setBottomSheetCallback(final BottomSheetBehavior bottomSheetBehavior){
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+
+        mButtonHome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mHomePresenter.startGame();
+            }
+        });
+
+    }
+
+    private void setBottomSheetCallback(final BottomSheetBehavior bottomSheetBehavior) {
 
         bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
-            public void onStateChanged(View bottomSheet, int newState) {
-                String nuevoEstado = "";
-
-                switch(newState) {
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                switch (newState) {
                     case BottomSheetBehavior.STATE_COLLAPSED:
-                        nuevoEstado = "STATE_COLLAPSED";
-                        break;
-                    case BottomSheetBehavior.STATE_EXPANDED:
-                        nuevoEstado = "STATE_EXPANDED";
-                        break;
-                    case BottomSheetBehavior.STATE_HIDDEN:
-                        nuevoEstado = "STATE_HIDDEN";
+                        hideBottomSheetContent();
                         break;
                     case BottomSheetBehavior.STATE_DRAGGING:
-                        nuevoEstado = "STATE_DRAGGING";
-
-                        break;
-                    case BottomSheetBehavior.STATE_SETTLING:
-                        nuevoEstado = "STATE_SETTLING";
+                        showBottomSheetContent();
                         break;
                 }
-
-                Log.i("BottomSheets", "Nuevo estado: " + nuevoEstado);
             }
 
             @Override
-            public void onSlide(View bottomSheet, float slideOffset) {
-
-                Log.i("BottomSheets", "Offset: " + slideOffset);
-
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
             }
         });
 
 
     }
+
+    @Override
+    public void showBottomSheetContent() {
+        mBottomSheetContent.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideBottomSheetContent() {
+        mBottomSheetContent.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public void bottomSheetBehaviorExpanded() {
+        mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+    }
+
+    @Override
+    public void bottomSheetBehaviorCollapsed() {
+        mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+    }
+
+    @Override
+    public int getState() {
+        return mBottomSheetBehavior.getState();
+    }
+
+    @Override
+    public void draggableBottomSheet() {
+        if (getState() == BottomSheetBehavior.STATE_COLLAPSED) {
+            showBottomSheetContent();
+            bottomSheetBehaviorExpanded();
+        } else
+            bottomSheetBehaviorCollapsed();
+
+    }
+
 }
