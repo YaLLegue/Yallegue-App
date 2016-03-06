@@ -17,4 +17,9 @@ public class HomePresenter implements HomeContract.UserActionListener {
     public void startGame() {
         mView.draggableBottomSheet();
     }
+
+    @Override
+    public void play() {
+        mView.showDialogParty();
+    }
 }

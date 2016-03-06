@@ -4,12 +4,14 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.FloatingActionButton;
 import android.view.View;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 import butterknife.Bind;
 import pibes.yallegue.R;
 import pibes.yallegue.common.BaseActivity;
+import pibes.yallegue.party.PartyDialogFragment;
 
 public class HomeActivity extends BaseActivity implements HomeContract.View {
 
@@ -22,6 +24,9 @@ public class HomeActivity extends BaseActivity implements HomeContract.View {
 
     @Bind(R.id.button_home)
     FloatingActionButton mButtonHome;
+
+    @Bind(R.id.button_party)
+    Button mButtonParty;
 
     private BottomSheetBehavior mBottomSheetBehavior;
     private HomePresenter mHomePresenter;
@@ -54,6 +59,13 @@ public class HomeActivity extends BaseActivity implements HomeContract.View {
             @Override
             public void onClick(View v) {
                 mHomePresenter.startGame();
+            }
+        });
+
+        mButtonParty.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mHomePresenter.play();
             }
         });
 
@@ -115,6 +127,12 @@ public class HomeActivity extends BaseActivity implements HomeContract.View {
         } else
             bottomSheetBehaviorCollapsed();
 
+    }
+
+    @Override
+    public void showDialogParty() {
+        PartyDialogFragment partyDialogFragment = PartyDialogFragment.newInstance();
+        partyDialogFragment.show(getSupportFragmentManager(),"");
     }
 
 }

@@ -18,11 +18,15 @@ public class HomeContract {
         int getState();
 
         void draggableBottomSheet();
+
+        void showDialogParty();
     }
 
     interface UserActionListener {
 
         void startGame();
+
+        void play();
 
     }
 }
