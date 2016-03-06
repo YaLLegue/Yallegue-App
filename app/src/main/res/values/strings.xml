@@ -8,6 +8,7 @@
     <string name="walk">Voy a caminar</string>
     <string name="search">Buscar Usuarios</string>
     <string name="logout">Cerrar Sesión</string>
+    <string name="text_dialog_home">Verificando tu destino y ruta…</string>
 
     <string-array name="metro_array">
         <item>Linea 1</item>

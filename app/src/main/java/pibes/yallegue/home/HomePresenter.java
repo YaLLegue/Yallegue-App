@@ -46,21 +46,31 @@ public class HomePresenter implements HomeContract.UserActionListener {
     @Override
     public void loadStation() {
 
+        try {
+            mView.showProgressIndicator(true);
 
-        DataService dataService = llegueApplication.getDataService();
-        dataService.getStation()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(llegueApplication.subscribeScheduler()).subscribe(new Action1<Subway>() {
-            @Override
-            public void call(Subway subway) {
-                mView.showStationOnEditText(subway.getName());
-            }
-        }, new Action1<Throwable>() {
-            @Override
-            public void call(Throwable throwable) {
-                throwable.printStackTrace();
-            }
-        });
+            DataService dataService = llegueApplication.getDataService();
+            dataService.getStation()
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(llegueApplication.subscribeScheduler()).subscribe(new Action1<Subway>() {
+                @Override
+                public void call(Subway subway) {
+                    mView.showStationOnEditText(subway.getName());
+                    mView.showTextLabel("Jugar");
+                    mView.showProgressIndicator(false);
+                }
+            }, new Action1<Throwable>() {
+                @Override
+                public void call(Throwable throwable) {
+                    throwable.printStackTrace();
+
+                    mView.showProgressIndicator(false);
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
 
     }
 

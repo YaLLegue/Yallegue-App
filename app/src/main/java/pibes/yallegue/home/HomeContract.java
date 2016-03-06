@@ -28,6 +28,10 @@ public class HomeContract {
         void showStationOnEditText(String txt);
 
         void showOrangeStation(List<String> stations);
+
+        void showProgressIndicator(Boolean state);
+
+        void showTextLabel(String play);
     }
 
     interface UserActionListener {

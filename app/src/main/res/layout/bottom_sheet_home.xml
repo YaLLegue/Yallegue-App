@@ -176,7 +176,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_large"
             android:layout_gravity="center"
-            android:text="Jugar"
+            android:text="Verificar Ruta"
             style="@style/Widget.Button.Party"/>
 
     </LinearLayout>

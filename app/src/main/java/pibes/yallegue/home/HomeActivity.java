@@ -1,6 +1,7 @@
 package pibes.yallegue.home;
 
 import android.content.Context;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -87,6 +88,8 @@ public class HomeActivity extends BaseActivity implements GoogleApiClient.Connec
 
     @Bind(R.id.destine_end_station)
     Spinner mDestineEndSpinner;
+
+    private ProgressDialog mProgressDialogHome;
 
     private int flag = 0;
 
@@ -219,6 +222,20 @@ public class HomeActivity extends BaseActivity implements GoogleApiClient.Connec
 
     }
 
+    @Override
+    public void showProgressIndicator(Boolean state) {
+        if (state)
+            setProgressState(true);
+        else
+            mProgressDialogHome.dismiss();
+
+    }
+
+    @Override
+    public void showTextLabel(String play) {
+        mButtonParty.setText(play);
+    }
+
 
     private void connectGoogleApiClient() {
         if (!mGoogleApiClient.isConnected() && !mGoogleApiClient.isConnecting()) {
@@ -243,7 +260,12 @@ public class HomeActivity extends BaseActivity implements GoogleApiClient.Connec
             @Override
             public void onClick(View v) {
 
-                mHomePresenter.loadStation();
+                if (mButtonParty.getText().toString().equals("Jugar")){
+                   mHomePresenter.play();
+                }else{
+                    mHomePresenter.loadStation();
+                }
+
 
             }
         });
@@ -400,7 +422,7 @@ public class HomeActivity extends BaseActivity implements GoogleApiClient.Connec
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (parent.getItemAtPosition(position).equals("Linea 7")) {
-                   // mHomePresenter.loadOrangeStation();
+                    // mHomePresenter.loadOrangeStation();
                     mDestineEndSpinner.setAdapter(mAdapter);
                 }
             }
@@ -414,6 +436,9 @@ public class HomeActivity extends BaseActivity implements GoogleApiClient.Connec
 
     }
 
+    private void setProgressState(Boolean state) {
+        mProgressDialogHome = ProgressDialog.show(HomeActivity.this, null, getString(R.string.text_dialog_home), state);
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
