@@ -20,7 +20,7 @@
         android:background="@color/white"
         android:orientation="vertical"
         android:padding="16dp"
-        android:visibility="invisible">
+        android:visibility="visible">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -35,6 +35,7 @@
                 android:src="@drawable/ic_directions_24dp"/>
 
             <EditText
+                android:id="@+id/auto_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"

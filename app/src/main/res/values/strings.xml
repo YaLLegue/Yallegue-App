@@ -8,4 +8,19 @@
     <string name="walk">Voy a caminar</string>
     <string name="search">Buscar Usuarios</string>
     <string name="logout">Cerrar Sesión</string>
+
+    <string-array name="metro_array">
+        <item>Linea 1</item>
+        <item>Linea 2</item>
+        <item>Linea 3</item>
+        <item>Linea 4</item>
+        <item>Linea 5</item>
+        <item>Linea 6</item>
+        <item>Linea 7</item>
+        <item>Linea 8</item>
+        <item>Linea 9</item>
+        <item>Linea 10</item>
+        <item>Linea 11</item>
+    </string-array>
+
 </resources>

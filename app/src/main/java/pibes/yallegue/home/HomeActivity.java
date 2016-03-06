@@ -18,10 +18,14 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.facebook.login.LoginManager;
@@ -69,6 +73,24 @@ public class HomeActivity extends BaseActivity implements GoogleApiClient.Connec
     @Bind(R.id.button_party)
     Button mButtonParty;
 
+    @Bind(R.id.auto_text)
+    EditText mSearchInput;
+
+    @Bind(R.id.start_station)
+    Spinner mStateStationSpinner;
+
+    @Bind(R.id.destine_start_station)
+    Spinner mDestineSpinner;
+
+    @Bind(R.id.end_station)
+    Spinner mEndSpinner;
+
+    @Bind(R.id.destine_end_station)
+    Spinner mDestineEndSpinner;
+
+    private int flag = 0;
+
+
     private BottomSheetBehavior mBottomSheetBehavior;
     private HomePresenter mHomePresenter;
 
@@ -78,6 +100,8 @@ public class HomeActivity extends BaseActivity implements GoogleApiClient.Connec
     private Marker myMarker;
     private Polyline myPolyline;
     private List<LatLng> myPoints;
+
+    private ArrayAdapter<String> mAdapter;
 
     @Override
     protected int getLayout() {
@@ -92,7 +116,6 @@ public class HomeActivity extends BaseActivity implements GoogleApiClient.Connec
         buildGoogleApiClient();
         setupMap();
         checkNotification(getIntent());
-
     }
 
     @Override
@@ -109,7 +132,7 @@ public class HomeActivity extends BaseActivity implements GoogleApiClient.Connec
 
     private void setupBottomSheet() {
         if (mHomePresenter == null)
-            mHomePresenter = new HomePresenter(this);
+            mHomePresenter = new HomePresenter(this, this);
 
         mBottomSheetBehavior = BottomSheetBehavior.from(mBottomSheetHome);
         setBottomSheetCallback(mBottomSheetBehavior);
@@ -182,6 +205,20 @@ public class HomeActivity extends BaseActivity implements GoogleApiClient.Connec
         partyDialogFragment.show(getSupportFragmentManager(), "");
     }
 
+    @Override
+    public void showStationOnEditText(String txt) {
+        mSearchInput.setText(txt);
+    }
+
+    @Override
+    public void showOrangeStation(List<String> stations) {
+        mAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, stations);
+        mAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mEndSpinner.setAdapter(mAdapter);
+
+
+    }
+
 
     private void connectGoogleApiClient() {
         if (!mGoogleApiClient.isConnected() && !mGoogleApiClient.isConnecting()) {
@@ -192,6 +229,7 @@ public class HomeActivity extends BaseActivity implements GoogleApiClient.Connec
     @Override
     protected void onResume() {
         super.onResume();
+        initializeStations();
         connectGoogleApiClient();
 
         mButtonHome.setOnClickListener(new View.OnClickListener() {
@@ -204,7 +242,9 @@ public class HomeActivity extends BaseActivity implements GoogleApiClient.Connec
         mButtonParty.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mHomePresenter.play();
+
+                mHomePresenter.loadStation();
+
             }
         });
 
@@ -331,6 +371,47 @@ public class HomeActivity extends BaseActivity implements GoogleApiClient.Connec
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_home, menu);
         return super.onCreateOptionsMenu(menu);
+    }
+
+
+    private void initializeStations() {
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.metro_array, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mStateStationSpinner.setAdapter(adapter);
+        mDestineSpinner.setAdapter(adapter);
+
+        mStateStationSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                if (parent.getItemAtPosition(position).equals("Linea 7")) {
+                    mHomePresenter.loadOrangeStation();
+                }
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        mDestineSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (parent.getItemAtPosition(position).equals("Linea 7")) {
+                   // mHomePresenter.loadOrangeStation();
+                    mDestineEndSpinner.setAdapter(mAdapter);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+
     }
 
 
