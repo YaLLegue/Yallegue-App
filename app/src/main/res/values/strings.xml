@@ -6,4 +6,5 @@
     <string name="cars">Taxi, Uber, Auto propio</string>
     <string name="destine">Destino</string>
     <string name="walk">Voy a caminar</string>
+    <string name="search">Buscar Usuarios</string>
 </resources>
